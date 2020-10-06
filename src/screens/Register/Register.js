@@ -3,20 +3,16 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
-import Header from '../../components/Header/Header';
 
 
 
-const Register = () => {
+const Register = (props) => {
 
     const [show, setShow] = useState(true);
 
     return (
         <View style={styles.container}>
             <View>
-               <Header
-               back={true}
-               />
                 <Text style={styles.subNav}>
                     Sign Up
             </Text>
@@ -45,17 +41,17 @@ const Register = () => {
             <View>
                 <Buttoncomponent
                     width={WP(70)}
-                    text="Log In"
+                    text="Signup"
                     height={60}
-                    OnClick="null"
+                    OnClick={()=>{props.navigation.navigate('Home')}}
                 />
                 <View style={styles.noAccount}>
                     <View>
-                        <Text style={styles.noAccountText}>Don't have an account?</Text>
+                        <Text style={styles.noAccountText}>Have an account already?</Text>
                     </View>
                     <View>
-                        <TouchableOpacity onPress={() => { }} style={styles.secondaryButton}>
-                            <Text style={styles.secondaryButtonText}>Sign Up</Text>
+                        <TouchableOpacity onPress={() => {props.navigation.navigate('login') }} style={styles.secondaryButton}>
+                            <Text style={styles.secondaryButtonText}>log in</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

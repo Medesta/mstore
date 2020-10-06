@@ -10,7 +10,7 @@ const Featured = (props) => {
             <Text style={styles.subNavTitle}>
                 Featured
         </Text>
-            <TouchableOpacity style={styles.subNavMore}>
+            <TouchableOpacity style={styles.subNavMore} onPress={props.onPress}>
                 <Text style={styles.subNavMoreText}>
                     See all
         </Text>
@@ -25,7 +25,7 @@ const Featured = (props) => {
                 horizontal
                 data={props.list}
                 renderItem={({ item }) =>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.featureBox} >
+                    <TouchableOpacity activeOpacity={0.8} style={styles.featureBox} onPress={props.show} >
                         <View style={styles.featureBoxInside}>
                             <Image style={styles.featuredImageBox} source={item.image} />
                         </View>

@@ -5,7 +5,7 @@ import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 
 
 
-const Intro = () => {
+const Intro = (props) => {
     return (
         <View style={styles.container}>
             <View>
@@ -27,9 +27,9 @@ const Intro = () => {
                 width={WP(70)}
                 text="Log In"
                 height={60}
-                OnClick="null"
+                OnClick={()=>{props.navigation.navigate('login')}}
                 />
-                <TouchableOpacity onPress={() => { }} style={styles.secondaryButton}>
+                <TouchableOpacity onPress={() => {props.navigation.navigate('Signup') }} style={styles.secondaryButton}>
                     <Text style={styles.secondaryButtonText}>Sign Up</Text>
                 </TouchableOpacity>
 

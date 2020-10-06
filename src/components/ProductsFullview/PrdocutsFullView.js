@@ -19,7 +19,7 @@ const ProductsFullView = (props) => {
                 >
                     {(props.list).map((item) => {
                         return (
-                            <TouchableOpacity key={props.list.index} activeOpacity={0.8} style={styles.featureBox}>
+                            <TouchableOpacity key={props.list.index} activeOpacity={0.8} style={styles.featureBox} onPress={props.onPress}>
                                 <View style={styles.featureBoxInside}>
                                     <Image style={styles.featuredImageBox} source={item.image} />
                                 </View>

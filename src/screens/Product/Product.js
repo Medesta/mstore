@@ -52,13 +52,6 @@ class Product extends Component {
     render() {
         return [
             <ScrollView style={styles.container} >
-                <View>
-                    <Header
-                        back={true}
-                        search={true}
-                        ring={true}
-                    />
-                </View>
 
                 <View style={styles.productPage}>
                     <View style={styles.productPageImage}>

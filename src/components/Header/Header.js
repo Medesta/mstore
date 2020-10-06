@@ -10,7 +10,7 @@ const Header = (props) => {
                 <View style={styles.headerContainer}>
                     {props.back ?
                         <View>
-                            <TouchableOpacity style={styles.Icon}>
+                            <TouchableOpacity style={styles.Icon} onPress={()=>{props.navigation.pop()}}>
                                 <Image
                                     style={styles.backProp}
                                     source={require('../../assets/back.png')}

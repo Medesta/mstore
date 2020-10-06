@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Header from '../../components/Header/Header';
 import ProductsFullView from '../../components/ProductsFullview/PrdocutsFullView';
 
 
@@ -55,16 +54,10 @@ class ProductsTab extends Component{
 render(){
     return (
         <ScrollView style={styles.container} >
-            <View>
-                <Header
-                    back={true}
-                    search={true}
-                    ring={true}
-                />
-            </View>
             <ProductsFullView
-            name="Featured"
+            name={this.props.navigation.getParam("name")}
             list={this.state.Feature}
+            onPress={()=>{this.props.navigation.navigate('Product')}}
                 />
 
         </ScrollView>

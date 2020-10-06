@@ -5,8 +5,6 @@ import Featured from '../../components/Featured/Featured';
 import Categories from '../../components/Categories/Categories';
 import BestSell from '../../components/BestSell/BestSell';
 import { ScrollView } from 'react-native-gesture-handler';
-import Header from '../../components/Header/Header';
-import ProductsFullView from '../../components/ProductsFullview/PrdocutsFullView';
 
 class Home extends Component {
     state = {
@@ -73,21 +71,24 @@ class Home extends Component {
         return (
             <ScrollView>
             <View style={styles.container}>
-                <Header
-                back={false}
-                menu={true}
-                ring={true}
-                search={false}
-                filter={true}
-                searchBar={true}
-                />
+                
                 <Categories
                 list={this.state.Categories}/>
                 <Featured
                 list={this.state.Feature}
+                name="Featured"
+                onPress={()=>{this.props.navigation.navigate('ProductsList',{
+                    name:'Featured'
+                })}}
+                show={()=>{this.props.navigation.navigate('Product')}}
                 />
                 <BestSell
                 list={this.state.BestSell}
+                name="Bestsell"
+                onPress={()=>{this.props.navigation.navigate('ProductsList',{
+                    name:"Best Selling"
+                })}}
+                show={()=>{this.props.navigation.navigate('Product')}}
                 />
                 
             </View>

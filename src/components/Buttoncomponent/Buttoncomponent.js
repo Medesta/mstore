@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 const Buttoncomponent = (props) => {
     return (
         <View style={styles.componentConatiner}>
-        <TouchableOpacity onPress={() => { }} style={[styles.primaryButton,props.width&&{width:props.width},props.height&&{height:props.height}]}>
+        <TouchableOpacity onPress={props.OnClick} style={[styles.primaryButton,props.width&&{width:props.width},props.height&&{height:props.height}]}>
             <LinearGradient
                 colors={['#667eea', '#64b5ff']}
                 style={styles.linearGradient}

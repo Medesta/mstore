@@ -3,20 +3,16 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
-import Header from '../../components/Header/Header';
 
 
 
-const Login = () => {
+const Login = (props) => {
 
     const [show, setShow] = useState(true);
 
     return (
         <View style={styles.container}>
             <View>
-               <Header
-               back={true}
-               />
                 <Text style={styles.subNav}>
                     Login
             </Text>
@@ -43,14 +39,14 @@ const Login = () => {
                     width={WP(70)}
                     text="Log In"
                     height={60}
-                    OnClick="null"
+                    OnClick={()=>{props.navigation.navigate('Home')}}
                 />
                 <View style={styles.noAccount}>
                     <View>
                         <Text style={styles.noAccountText}>Don't have an account?</Text>
                     </View>
                     <View>
-                        <TouchableOpacity onPress={() => { }} style={styles.secondaryButton}>
+                        <TouchableOpacity onPress={() => {props.navigation.navigate('Signup') }} style={styles.secondaryButton}>
                             <Text style={styles.secondaryButtonText}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>

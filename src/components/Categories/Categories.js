@@ -10,7 +10,7 @@ const Categories = (props) => {
             <Text style={styles.subNavTitle}>
                 Categories
         </Text>
-            <TouchableOpacity style={styles.subNavMore}>
+            <TouchableOpacity style={styles.subNavMore} >
                 <Text style={styles.subNavMoreText}>
                     See all
         </Text>
