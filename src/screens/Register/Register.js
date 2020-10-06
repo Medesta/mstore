@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
+import Header from '../../components/Header/Header';
 
 
 
@@ -13,12 +14,9 @@ const Register = () => {
     return (
         <View style={styles.container}>
             <View>
-                <TouchableOpacity style={styles.backIcon}>
-                    <Image
-                        style={styles.backProp}
-                        source={require('../../assets/back.png')}
-                    />
-                </TouchableOpacity>
+               <Header
+               back={true}
+               />
                 <Text style={styles.subNav}>
                     Sign Up
             </Text>
@@ -83,17 +81,9 @@ const styles = StyleSheet.create({
         color: "#000",
         fontSize: 34,
         textAlign: 'left',
-        marginTop: 20,
+        marginTop: 0,
         paddingLeft: WP(5),
         color: '#707070'
-    }, backIcon: {
-        width: WP(25),
-        height: HP(10),
-        justifyContent: 'flex-end',
-        alignItems: 'flex-start',
-        paddingLeft: WP(5),
-
-
     },
     eyeIcon: {
         width: WP(10),
@@ -110,9 +100,6 @@ const styles = StyleSheet.create({
         width: WP(4) * 1.56,
         height: WP(4)
 
-    },
-    backProp: {
-        width: "60%"
     },
     loginForm: {
         width: '100%',

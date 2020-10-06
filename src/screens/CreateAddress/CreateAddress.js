@@ -4,66 +4,63 @@ import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image } from 'reac
 import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 import Header from '../../components/Header/Header';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 
-const Login = () => {
+const CreateAddress = () => {
 
     const [show, setShow] = useState(true);
 
     return (
         <View style={styles.container}>
             <View>
-               <Header
-               back={true}
-               />
+                <Header
+                    back={true}
+                    ring={true}
+                />
                 <Text style={styles.subNav}>
-                    Login
+                    Create Address
             </Text>
             </View>
+            <ScrollView>
             <View style={styles.loginForm}>
                 <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Email</Text>
-                    <TextInput style={styles.username} />
+                    <Text style={styles.fieldLabel}>Name</Text>
+                    <TextInput value="Irfan Anwar" style={styles.username} />
                 </View>
                 <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Password{show}</Text>
-                    <TextInput secureTextEntry={show} style={styles.username} />
-
-                    <TouchableOpacity style={styles.eyeIcon} onPress={() => setShow(!show)}>
-                        <Image
-                            style={styles.eyeProp}
-                            source={require('../../assets/eye.png')}
-                        />
-                    </TouchableOpacity>
+                    <Text style={styles.fieldLabel}>Address Line</Text>
+                    <TextInput value="Sample Road" style={styles.username} />
                 </View>
-            </View>
-            <View>
+                <View style={styles.loginField}>
+                    <Text style={styles.fieldLabel}>City</Text>
+                    <TextInput value="Sample" style={styles.username} />
+                </View>
+                <View style={styles.loginField}>
+                    <Text style={styles.fieldLabel}>Postal Code</Text>
+                    <TextInput value="0000" style={styles.username} />
+                </View>
+                <View style={styles.loginField}>
+                    <Text style={styles.fieldLabel}>Phone Number</Text>
+                    <TextInput value="00000000000" style={styles.username} />
+                </View>
+                </View>
+                <View style={styles.continueBtn}> 
                 <Buttoncomponent
-                    width={WP(70)}
-                    text="Log In"
+                    width={WP(90)}
+                    text="Add Address"
                     height={60}
                     OnClick="null"
                 />
-                <View style={styles.noAccount}>
-                    <View>
-                        <Text style={styles.noAccountText}>Don't have an account?</Text>
-                    </View>
-                    <View>
-                        <TouchableOpacity onPress={() => { }} style={styles.secondaryButton}>
-                            <Text style={styles.secondaryButtonText}>Sign Up</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-
             </View>
-
+            </ScrollView>
+            
         </View>
     );
 }
 
-export default Login;
+export default CreateAddress;
 
 const styles = StyleSheet.create({
     container: {
@@ -71,14 +68,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         justifyContent: 'flex-start',
     },
-
+    continueBtn:{
+        paddingVertical:20,
+    },
     subNav: {
         fontWeight: "normal",
         color: "#000",
         fontSize: 34,
         textAlign: 'left',
+        marginTop: 0,
         paddingLeft: WP(5),
-        color: '#707070'
     },
     eyeIcon: {
         width: WP(10),
@@ -97,12 +96,8 @@ const styles = StyleSheet.create({
 
     },
     loginForm: {
-        width: '100%',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        paddingBottom: 10,
-        paddingTop: HP(5),
-        padding: WP(8),
+        paddingHorizontal: WP(8),
+        marginTop:20
 
 
     },
@@ -114,7 +109,7 @@ const styles = StyleSheet.create({
         width: "100%",
         fontSize: 18,
         borderBottomColor: "#000",
-        borderBottomWidth: 1,
+        borderBottomWidth: StyleSheet.hairlineWidth,
         color: "#000",
         padding: 10,
         paddingBottom: 5,
