@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity, BackHandler } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 import Header from '../../components/Header/Header';
 import { HP, WP } from '../../utils/contants';
 
-class Checkout extends Component {
+class MyOrders extends Component {
     state = {
         cart: [
             {
@@ -67,22 +67,34 @@ class Checkout extends Component {
             }
         ]
     }
+    componentDidMount(){
+        BackHandler.addEventListener("hardwareBackPress", this.backAction);
+    }
+    componentWillUnmount() {
+        BackHandler.removeEventListener("hardwareBackPress", this.backAction);
+    }
+    
+    backAction = () => {
+        this.props.navigation.navigate('Home');
+        return true;
+    }
+
+    
+    
 
     render() {
         return [
-
-            <View style={styles.navi} >
-               
-                <Text style={styles.subNav}>
-                    Checkout
-                    </Text>
-            </View>,
             <ScrollView style={styles.container} >
+                <View>
+                    <Text style={styles.subNav}>
+                        My Orders
+                    </Text>
+                </View>
                 <View style={styles.cartMaped}>
                     {
                         (this.state.cart).map((obj, index) => {
                             return (
-                                <View key={index} style={styles.cartItem}>
+                                <TouchableOpacity key={obj.index} style={styles.cartItem} onPress={() => this.props.navigation.navigate('Product')}>
                                     <View style={styles.itemImage}>
                                         <Image
                                             style={styles.imageProduct}
@@ -95,115 +107,39 @@ class Checkout extends Component {
                                             <Text style={styles.itemCompany}>{obj.company}</Text>
                                             <Text style={styles.itemPrice}>${obj.price}</Text>
                                         </View>
+                                        <View>
+                                            <TouchableOpacity style={styles.againOrder} onPress={()=>this.props.navigation.navigate('Product')}>
+                                                <Text style={styles.againOrderText}>Order Again</Text>
+                                            </TouchableOpacity>
+                                        </View>
+
+                                    </View>
+                                    <View style={styles.itemCross}>
                                         <View style={styles.itemQuantity}>
-                                            <TouchableOpacity style={styles.itemQuantityBtn}>
-                                                <Text style={styles.itemQuantityBtnText}>-</Text>
-                                            </TouchableOpacity>
                                             <Text style={styles.itemQuantityText}>{obj.quantity}</Text>
-                                            <TouchableOpacity style={styles.itemQuantityBtn} >
-                                                <Text style={styles.itemQuantityBtnText}>+</Text>
-                                            </TouchableOpacity>
 
                                         </View>
                                     </View>
-                                    <View style={styles.itemCross}>
-                                        <TouchableOpacity style={styles.Icon}>
-                                            <Image
-                                                style={styles.menuProp}
-                                                source={require('../../assets/cross.png')}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
 
-                                </View>
+                                </TouchableOpacity>
                             )
                         })
                     }
 
                 </View>
             </ScrollView>,
-            <View style={styles.continueBtn}>
-                <View style={styles.orderDetails}>
-
-                    <Text style={styles.detailHead}>Address</Text>
-                    <View style={styles.orderLine}>
-                        <Text style={styles.detailans}>Home</Text>
-                    </View>
-                    <View style={styles.orderPricing} >
-                        <View style={styles.orderLine}>
-                            <Text style={styles.detailHead}>Subtotal</Text>
-                            <Text style={styles.detailans}>$160.00</Text>
-                        </View>
-                        <View style={styles.orderLine}>
-                            <Text style={styles.detailHead}>Discount</Text>
-                            <Text style={styles.detailans}>5%</Text>
-                        </View>
-                        <View style={styles.orderLine}>
-                            <Text style={styles.detailHead}>Shipping</Text>
-                            <Text style={styles.detailans}>$10.00</Text>
-                        </View>
-
-                    </View>
-                    <View style={styles.orderPricing} >
-                        <View style={styles.orderLine}>
-                            <Text style={styles.detailans}>Total</Text>
-                            <Text style={styles.detailans}>$162.00</Text>
-                        </View>
-                    </View>
-
-                </View>
-                <Buttoncomponent
-                    width={WP(80)}
-                    text="Select Address"
-                    height={60}
-                    OnClick={()=>{this.props.navigation.navigate('Address')}}
-                />
-            </View>
 
         ];
     }
 }
 
-export default Checkout;
+export default MyOrders;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-    },
-    orderDetails: {
-        paddingHorizontal: WP(5),
-        paddingVertical: 20,
-        height:HP(35)
-      
-    },
-    detailans:{
-        fontSize:20,
-        color:"#000"
-    },
-    detailSelect:{
-        fontSize:20,
-        color:'blue'
-    },
-    detailHead:{
-        fontSize:20,
-        color:'#a0a0a0',
-        marginBottom:5
-    },
-    orderPricing: {
-        marginTop: 10,
-        paddingVertical:10,
-        borderTopColor:"#a0a0a0",
-        borderTopWidth:1,
-        
-    },
-    orderLine: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    navi: {
-        backgroundColor: "#fff",
-        paddingBottom: 10
+        paddingTop: 30
     },
     subNav: {
         fontWeight: "normal",
@@ -217,7 +153,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingTop: 30,
         paddingHorizontal: WP(5),
-        paddingBottom: HP(52)
+        paddingBottom: WP(22)
     },
     cartItem: {
         overflow: 'hidden',
@@ -322,9 +258,21 @@ const styles = StyleSheet.create({
     },
     continueBtn: {
         paddingBottom: 20,
-        backgroundColor: 'rgba(255,255,255,1)',
+        backgroundColor: 'rgba(255,255,255,0.9)',
         position: 'absolute',
         bottom: 0
+    },
+    againOrder:{
+        backgroundColor:'#d6d6d6',
+        paddingHorizontal:5,
+        justifyContent:'center',
+        alignItems:'center',
+        paddingVertical:5
+
+    },
+    againOrderText:{
+        fontSize:16,
     }
+
 
 })

@@ -33,10 +33,6 @@ class Address extends Component {
         return [
 
             <View style={styles.navi} >
-                <Header
-                    back={true}
-                    ring={true}
-                />
                 <Text style={styles.subNav}>
                     Address
                     </Text>
@@ -70,7 +66,7 @@ class Address extends Component {
 
             </ScrollView>
             , <View style={styles.continueBtn}>
-                <TouchableOpacity style={styles.newAddress}>
+                <TouchableOpacity style={styles.newAddress} onPress={()=>this.props.navigation.navigate('CreateAddress')}>
                     <Text style={styles.newAdd}>Add Address</Text>
 
                 </TouchableOpacity>
@@ -78,7 +74,7 @@ class Address extends Component {
                     width={WP(90)}
                     text="Continue To Payment"
                     height={60}
-                    OnClick="null"
+                    OnClick={()=>{this.props.navigation.navigate('Confirmation')}}
                 />
             </View>
 

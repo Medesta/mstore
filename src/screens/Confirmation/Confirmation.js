@@ -1,10 +1,20 @@
-import React from 'react';
-import {Image, StyleSheet, Text, View  } from 'react-native';
+import React, { useEffect } from 'react';
+import {BackHandler, Image, StyleSheet, Text, View  } from 'react-native';
 import { abs } from 'react-native-reanimated';
 import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 
-const Confirmation = () => {
+const Confirmation = (props) => {
+    useEffect(()=>{
+        BackHandler.addEventListener("hardwareBackPress", backAction);
+        return ()=> {
+            BackHandler.removeEventListener("hardwareBackPress", backAction)
+        }
+    }, [])
+    const backAction = () => {
+       props.navigation.navigate('Home');
+       return true;
+    }
     return [
         <View style={styles.container}>
             <View style={styles.confirmationImg} >
@@ -24,7 +34,7 @@ const Confirmation = () => {
             width={WP(90)}
             text="Done"
             height={60}
-            OnClick="null"
+            OnClick={()=>props.navigation.navigate('MyOrders')}
         />
     </View>
     ];

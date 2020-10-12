@@ -10,11 +10,6 @@ const Categories = (props) => {
             <Text style={styles.subNavTitle}>
                 Categories
         </Text>
-            <TouchableOpacity style={styles.subNavMore} >
-                <Text style={styles.subNavMoreText}>
-                    See all
-        </Text>
-            </TouchableOpacity>
         </View>,
         <View style={styles.category}>
             <FlatList

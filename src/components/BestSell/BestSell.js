@@ -25,9 +25,9 @@ const BestSell = (props) => {
                 horizontal
                 data={props.list}
                 renderItem={({ item }) =>
-                    <TouchableOpacity activeOpacity={0.8}  style={styles.featureBox} onPress={props.show} >
+                    <TouchableOpacity activeOpacity={0.8}  style={styles.featureBox} onPress={()=>props.show(item._id)} >
                         <View style={styles.featureBoxInside}>
-                            <Image style={styles.featuredImageBox} source={item.image} />
+                            <Image style={styles.featuredImageBox} source={{uri:item.imageUrl}} />
                         </View>
                         <View style={styles.featuredInfo}>
                             <Text style={styles.featuredText}>${item.price}</Text>
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     featuredImageBox: {
         justifyContent: "center",
         alignItems: 'center',
+        resizeMode:"cover",
         height: "100%",
         width: "100%",
         overflow: 'hidden',

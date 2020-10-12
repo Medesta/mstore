@@ -72,10 +72,6 @@ class Cart extends Component {
         return [
             <ScrollView style={styles.container} >
                 <View>
-                    <Header
-                        back={true}
-                        ring={true}
-                    />
                     <Text style={styles.subNav}>
                         Cart
                     </Text>
@@ -84,7 +80,7 @@ class Cart extends Component {
                     {
                         (this.state.cart).map((obj, index) => {
                             return (
-                                <View key={obj.index} style={styles.cartItem}>
+                                <TouchableOpacity key={obj.index} style={styles.cartItem} onPress={()=>this.props.navigation.push('Product')}>
                                     <View style={styles.itemImage}>
                                         <Image
                                             style={styles.imageProduct}
@@ -117,7 +113,7 @@ class Cart extends Component {
                                         </TouchableOpacity>
                                     </View>
 
-                                </View>
+                                </TouchableOpacity>
                             )
                         })
                     }
@@ -127,9 +123,9 @@ class Cart extends Component {
             <View style={styles.continueBtn}>
                 <Buttoncomponent
                     width={WP(70)}
-                    text="Continue"
+                    text="Check Out"
                     height={60}
-                    OnClick="null"
+                    OnClick={()=>{this.props.navigation.navigate('Checkout')}}
                 />
             </View>
 

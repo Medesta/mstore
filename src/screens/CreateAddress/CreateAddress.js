@@ -8,17 +8,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 
 
-const CreateAddress = () => {
+const CreateAddress = (props) => {
 
     const [show, setShow] = useState(true);
 
     return (
         <View style={styles.container}>
             <View>
-                <Header
-                    back={true}
-                    ring={true}
-                />
                 <Text style={styles.subNav}>
                     Create Address
             </Text>
@@ -46,15 +42,16 @@ const CreateAddress = () => {
                     <TextInput value="00000000000" style={styles.username} />
                 </View>
                 </View>
-                <View style={styles.continueBtn}> 
+                
+            </ScrollView>
+            <View style={styles.continueBtn}> 
                 <Buttoncomponent
                     width={WP(90)}
                     text="Add Address"
                     height={60}
-                    OnClick="null"
+                    OnClick={()=>{props.navigation.pop()}}
                 />
             </View>
-            </ScrollView>
             
         </View>
     );

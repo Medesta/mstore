@@ -1,7 +1,9 @@
 import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { withNavigation } from 'react-navigation';
 import { WP, HP } from '../../utils/contants';
+import { DrawerActions } from 'react-navigation-drawer';
 
 const Header = (props) => {
     return (
@@ -23,7 +25,7 @@ const Header = (props) => {
                     {
                         props.menu ?
                             <View>
-                                <TouchableOpacity style={styles.Icon}>
+                                <TouchableOpacity style={styles.Icon} onPress={()=>{props.navigation.dispatch(DrawerActions.openDrawer());}}>
                                     <Image
                                         style={styles.menuProp}
                                         source={require('../../assets/menu.png')}
@@ -95,7 +97,7 @@ const Header = (props) => {
     );
 }
 
-export default Header;
+export default withNavigation(Header) ;
 
 const styles = StyleSheet.create({
 

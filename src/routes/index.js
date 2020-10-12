@@ -5,7 +5,8 @@ import HomeStack from './HomeStack/HomeStack';
 // import Check from '../helpers/Check';
 
 const SwitchStack = createSwitchNavigator({
-Auth: Auth,
+
+// Auth: Auth,
 App: HomeStack
 })
 

@@ -1,62 +1,106 @@
 
-import React, { useState } from 'react';
+import React, { Component, useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
+import {  userLogin } from '../../network/network';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 
-const Login = (props) => {
+class Login extends Component {
+    state = {
+        show: true,
+        email: '',
+        password: '',
+        
 
-    const [show, setShow] = useState(true);
+    }
+    toggleShow() {
+        const temp = this.state.show
+        this.setState({ show: !temp });
+    }
+    textChange(value, name) {
+        this.setState({
+            [name]: value
+        })
+    }
+    loginSubmit=()=>{
+        const {email,password} = this.state;
+        if(!email || !password){
+            alert('Please fill all fields');
+            return;
+        }
+        const obj = {'email':email ,"password":password}
+        userLogin(obj)
+        .then((response)=>{
+            console.log(response);
+            const user =response.data.user
+            AsyncStorage.setItem('user' ,JSON.stringify(user));
+            this.props.navigation.navigate('Home');
 
-    return (
-        <View style={styles.container}>
-            <View>
-                <Text style={styles.subNav}>
-                    Login
+        })
+        .catch((error)=>{
+            alert(error.response.data.payload.message);
+            
+        })
+        .finally(()=>{
+
+        })
+
+
+        // this.props.navigation.navigate('Home');
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <View>
+                    <Text style={styles.subNav}>
+                        Login
             </Text>
-            </View>
-            <View style={styles.loginForm}>
-                <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Email</Text>
-                    <TextInput style={styles.username} />
                 </View>
-                <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Password{show}</Text>
-                    <TextInput secureTextEntry={show} style={styles.username} />
-
-                    <TouchableOpacity style={styles.eyeIcon} onPress={() => setShow(!show)}>
-                        <Image
-                            style={styles.eyeProp}
-                            source={require('../../assets/eye.png')}
-                        />
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <View>
-                <Buttoncomponent
-                    width={WP(70)}
-                    text="Log In"
-                    height={60}
-                    OnClick={()=>{props.navigation.navigate('Home')}}
-                />
-                <View style={styles.noAccount}>
-                    <View>
-                        <Text style={styles.noAccountText}>Don't have an account?</Text>
+                <View style={styles.loginForm}>
+                    <View style={styles.loginField}>
+                        <Text style={styles.fieldLabel}>Email</Text>
+                        <TextInput style={styles.username} value={this.state.email} onChangeText={(value) => this.textChange(value, 'email')} />
                     </View>
-                    <View>
-                        <TouchableOpacity onPress={() => {props.navigation.navigate('Signup') }} style={styles.secondaryButton}>
-                            <Text style={styles.secondaryButtonText}>Sign Up</Text>
+                    <View style={styles.loginField}>
+                        <Text style={styles.fieldLabel}>Password</Text>
+                        <TextInput secureTextEntry={this.state.show} style={styles.username} value={this.state.password} onChangeText={(value) => this.textChange(value, 'password')} />
+
+                        <TouchableOpacity style={styles.eyeIcon} onPress={() => this.toggleShow}>
+                            <Image
+                                style={styles.eyeProp}
+                                source={require('../../assets/eye.png')}
+                            />
                         </TouchableOpacity>
                     </View>
                 </View>
+                <View>
+                    <Buttoncomponent
+                        width={WP(70)}
+                        text="Log In"
+                        height={60}
+                        OnClick={() => { this.loginSubmit() }}
+                    />
+                    <View style={styles.noAccount}>
+                        <View>
+                            <Text style={styles.noAccountText}>Don't have an account?</Text>
+                        </View>
+                        <View>
+                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('Signup') }} style={styles.secondaryButton}>
+                                <Text style={styles.secondaryButtonText}>Sign Up</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
+
+                </View>
 
             </View>
-
-        </View>
-    );
+        );
+    }
 }
 
 export default Login;

@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, ImageBackground, Image, StyleSheet } from 'react-native';
 import { WP, HP } from '../../utils/contants';
 import { FlatList } from 'react-native-gesture-handler';
 import { color } from 'react-native-reanimated';
+import { getFeatured } from '../../network/network';
+import User from '../../helper/User';
 
 const Featured = (props) => {
+    useEffect(() => {
+        console.log(props);
+
+    }, [])
     return [
         <View style={styles.subNav}>
             <Text style={styles.subNavTitle}>
@@ -25,9 +31,9 @@ const Featured = (props) => {
                 horizontal
                 data={props.list}
                 renderItem={({ item }) =>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.featureBox} onPress={props.show} >
+                <TouchableOpacity activeOpacity={0.8} style={styles.featureBox} onPress={()=>props.show(item._id)} >
                         <View style={styles.featureBoxInside}>
-                            <Image style={styles.featuredImageBox} source={item.image} />
+                            <Image style={styles.featuredImageBox} source={{ uri: item.imageUrl }} />
                         </View>
                         <View style={styles.featuredInfo}>
                             <Text style={styles.featuredText}>${item.price}</Text>
@@ -69,11 +75,11 @@ const styles = StyleSheet.create({
     featureBox: {
         backgroundColor: "transparent",
         marginRight: 20,
-        
+
     },
-    featureBoxInside:{
-         shadowColor: "#000",
-         borderRadius:7,
+    featureBoxInside: {
+        shadowColor: "#000",
+        borderRadius: 7,
         shadowOffset: {
             width: 0,
             height: 7,
@@ -81,19 +87,20 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.43,
         shadowRadius: 9.51,
         elevation: 15,
-        backgroundColor:"#fff",
+        backgroundColor: "#fff",
         height: HP(25),
         width: WP(40),
-       
+
 
     },
-    featuredInfo:{
-        paddingTop:15,
+    featuredInfo: {
+        paddingTop: 15,
 
     },
     featuredImageBox: {
         justifyContent: "center",
         alignItems: 'center',
+        resizeMode: 'cover',
         height: "100%",
         width: "100%",
         overflow: 'hidden',
@@ -103,7 +110,7 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 18,
         fontWeight: '400',
-        marginBottom:7
+        marginBottom: 7
 
     }
 

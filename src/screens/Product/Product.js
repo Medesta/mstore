@@ -2,46 +2,66 @@ import React, { Component } from 'react';
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Swiper from 'react-native-swiper';
+import ViewMoreText from 'react-native-view-more-text';
 import Header from '../../components/Header/Header';
+import User from '../../helper/User';
+import { getPrdouctById } from '../../network/network';
 import { HP, WP } from '../../utils/contants';
 
 
-const images = [{
-    props: {
-        source: require('../../assets/product.png')
-    }
-}, {
-    props: {
-        source: require('../../assets/product2.png')
-    }
-},
-{
-    props: {
-        source: require('../../assets/product3.png')
-    }
-}]
 class Product extends Component {
-    state = {
+    constructor(props) {
+        super(props);
+        console.log(this.props.navigation.getParam('id'), "id reciving point");
+        this.state = { productId: this.props.navigation.getParam('id') ,
+        product: {},
         sizes: [
             {
                 mark: 'S',
-                available: true
+                available: false
             },
             {
                 mark: 'M',
-                available: true
+                available: false
             },
             {
                 mark: 'L',
-                available: true
+                available: false
             },
             {
                 mark: 'XXL',
                 available: false
             }
         ],
-        currentSelected: 0
+        currentSelected: 0,
     }
+    }
+    sizeMatch = () => {
+        const temp = this.state;
+        if (this.state.product.size.includes('Small')) {
+            temp.sizes[0].available = true;
+        }
+        if (this.state.product.size.includes('Medium')) {
+            temp.sizes[1].available = true;
+        }
+        if (this.state.product.size.includes('Large')) {
+            temp.sizes[2].available = true;
+        }
+        if (this.state.product.size.includes('Extra Large')) {
+            temp.sizes[3].available = true;
+        }
+        this.setState({sizes:temp.sizes})
+    }
+    componentDidMount() {
+        getPrdouctById(this.state.productId, User.getToken())
+            .then((response) => {
+                console.log(response);
+                this.setState({ product: response.data.product });
+                this.sizeMatch();
+
+            })
+    }
+
     sizeToggler = (index) => {
         const temp = this.state;
         temp.currentSelected = index;
@@ -56,7 +76,7 @@ class Product extends Component {
                 <View style={styles.productPage}>
                     <View style={styles.productPageImage}>
                         <View style={styles.productImage}>
-                            <Swiper style={styles.wrapper} showsButtons={false}
+                            {/* <Swiper style={styles.wrapper} showsButtons={false}
                                 autoplay={true}
                                 loop={true}
                                 showsPagination={true}
@@ -108,7 +128,7 @@ class Product extends Component {
 
 
                             </Swiper>
-
+ */}
 
                         </View>
                     </View>
@@ -140,14 +160,16 @@ class Product extends Component {
                         <Text style={styles.detailsHeading}>
                             Description
                 </Text>
-                        <Text style={styles.detailsDescription}>
-                            A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.
+                        <ViewMoreText
+                            numberOfLines={2}
+                            renderViewMore={this.renderViewMore}
+                            renderViewLess={this.renderViewLess}
+                            textStyle={styles.detailsDescription}
+                        >
+                            <Text numberOfLines={this.state.more ? 3 : 1} style={styles.detailsDescription}>
+                                A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.
                 </Text>
-                        <TouchableOpacity style={styles.detailsDescriptionMoreBtn}>
-                            <Text style={styles.detailsDescriptionMore}>
-                                More
-                    </Text>
-                        </TouchableOpacity>
+                        </ViewMoreText>
 
                     </View>
                     <View style={styles.sizeHeader}>
@@ -171,22 +193,22 @@ class Product extends Component {
                         }
 
                     </View>
-                   
+
                 </View>
             </ScrollView>,
-             <View style={styles.productButton}>
-             <TouchableOpacity style={styles.addToCart}>
-                 <Text style={styles.addToCartText}>add to cart</Text>
+            <View style={styles.productButton}>
+                <TouchableOpacity style={styles.addToCart} onPress={() => { this.props.navigation.navigate('Cart') }}>
+                    <Text style={styles.addToCartText}>add to cart</Text>
 
-             </TouchableOpacity>
-             <TouchableOpacity style={styles.buyNow}>
-                 <Text style={styles.buyNowText}>buy now</Text>
-             </TouchableOpacity>
-         </View>
-            
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buyNow} >
+                    <Text style={styles.buyNowText}>buy now</Text>
+                </TouchableOpacity>
+            </View>
 
 
-                    ];
+
+        ];
     }
 }
 
@@ -365,7 +387,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         position: 'absolute',
         bottom: 0,
-        backgroundColor:"#fff"
+        backgroundColor: "#fff"
 
     },
     addToCart: {
