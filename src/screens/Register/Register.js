@@ -5,6 +5,7 @@ import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 import { userCreate } from '../../network/network';
 import AsyncStorage from '@react-native-community/async-storage';
+import Loader from '../../components/Loader/Loader';
 
 
 
@@ -15,7 +16,8 @@ class Register extends Component {
         name: '',
         email: '',
         password: '',
-        gender: ''
+        gender: '',
+        loader:false
     }
     toggleShow() {
         const temp = this.state.show
@@ -27,8 +29,12 @@ class Register extends Component {
         },()=>{console.log(this.state)})
     }
     signSubmit=()=>{
+    this.setState({loader:true});
+
         const {email,password ,gender , name} = this.state;
         if(!email || !password || !gender || !name){
+    this.setState({loader:false});
+
             alert('Please fill all fields');
             return;
         }
@@ -49,7 +55,9 @@ class Register extends Component {
         })
         .catch((error)=>{
             console.log(error.response)
+    this.setState({loader:false});
             alert(error.response.data.payload.message);
+            
             
             
         })
@@ -70,6 +78,8 @@ class Register extends Component {
             </Text>
                 </View>
                 <View style={styles.loginForm}>
+            {this.state.loader && <Loader />}
+
                     <View style={styles.loginField}>
                         <Text style={styles.fieldLabel}>Name</Text>
                         <TextInput style={styles.username} value={this.state.name} onChangeText={(value) => this.textChange(value, 'name')} />

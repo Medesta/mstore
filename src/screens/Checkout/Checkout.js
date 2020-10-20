@@ -3,72 +3,57 @@ import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 import Header from '../../components/Header/Header';
+import Loader from '../../components/Loader/Loader';
+import User from '../../helper/User';
+import { getAddress, getCart } from '../../network/network';
 import { HP, WP } from '../../utils/contants';
 
 class Checkout extends Component {
     state = {
-        cart: [
-            {
-                name: "Woman T-Shirt",
-                price: '55.00',
-                company: 'Lotto. LTD',
-                quantity: 1,
-                image: require('../../assets/featured/p1.png')
-            },
-            {
-                name: "Man T-Shirt",
-                price: '34.00',
-                company: 'Locoste',
-                quantity: 1,
-                image: require('../../assets/featured/p2.png')
-            },
-            {
-                name: "Woman Upper",
-                price: '45.0',
-                company: 'Lotto. LTD',
-                quantity: 1,
-                image: require('../../assets/featured/p3.png')
-            },
-            {
-                name: "Blezer",
-                price: '15.0',
-                company: 'Razor',
-                quantity: 1,
-                image: require('../../assets/featured/p4.png')
-            },
-
-            {
-                name: "Woman T-Shirt",
-                price: '55.00',
-                company: 'bata',
-                quantity: 1,
-                image: require('../../assets/bestsell/p1.png')
-            },
-            {
-                name: "Man T-Shirt",
-                price: '34.00',
-                company: 'Addidas',
-                quantity: 1,
-                image: require('../../assets/bestsell/p2.png')
-            },
-            {
-                name: "Woman Upper",
-                price: '45.0',
-                company: 'Nike',
-                quantity: 1,
-                image: require('../../assets/bestsell/p3.png')
-            },
-            {
-                name: "Blezer",
-                price: '15.0',
-                company: 'Maverich',
-                quantity: 1,
-                image: require('../../assets/bestsell/p4.png')
+        loader:true,
+       products:{},
+       address:{}
+    }
+    componentDidMount(){
+        this.getDataFromEndpoint();
+         this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                if (this.state.products.products_info) {
+                    this.getDataFromEndpoint()
+                }
             }
-        ]
+        );
+
+    } 
+    getDataFromEndpoint = () => {
+        getCart(User.getToken())
+            .then((response) => {
+                console.log(response);
+                this.setState({ products: response.data.product }) }
+            // ,()=>console.log(this.state,"!!!!!!!!!!!!!!!!!")
+            )
+            .catch((error) => {
+                console.log(error.response);
+            })
+        getAddress(User.getToken())
+        .then((response)=>{
+            console.log(response);
+            // this.setState({address:response})
+
+            this.setState({loader:false ,
+             address:response.data.addresses})
+
+        })
+        .catch((error)=>{
+            console.log(error.response);
+            this.setState({address:response.data.addresses})
+        })
+
     }
 
     render() {
+        console.log(this.state , "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
         return [
 
             <View style={styles.navi} >
@@ -78,44 +63,31 @@ class Checkout extends Component {
                     </Text>
             </View>,
             <ScrollView style={styles.container} >
+                    {this.state.loader && <Loader />}
                 <View style={styles.cartMaped}>
-                    {
-                        (this.state.cart).map((obj, index) => {
+                    {this.state.products?.products_info?.map((obj, index) => {
                             return (
-                                <View key={index} style={styles.cartItem}>
+                                <TouchableOpacity key={index} style={styles.cartItem} onPress={() => this.props.navigation.push('Product', {
+                                    id: obj.product_id
+    
+                                })}>
                                     <View style={styles.itemImage}>
                                         <Image
                                             style={styles.imageProduct}
-                                            source={obj.image}
+                                            source={{ uri: obj.imageUrl[0] }}
                                         />
                                     </View>
                                     <View style={styles.itemDetailsBox}>
                                         <View >
                                             <Text style={styles.itemName}>{obj.name}</Text>
-                                            <Text style={styles.itemCompany}>{obj.company}</Text>
+                                            <Text style={styles.itemCompany}>{obj.brand}</Text>
                                             <Text style={styles.itemPrice}>${obj.price}</Text>
                                         </View>
-                                        <View style={styles.itemQuantity}>
-                                            <TouchableOpacity style={styles.itemQuantityBtn}>
-                                                <Text style={styles.itemQuantityBtnText}>-</Text>
-                                            </TouchableOpacity>
-                                            <Text style={styles.itemQuantityText}>{obj.quantity}</Text>
-                                            <TouchableOpacity style={styles.itemQuantityBtn} >
-                                                <Text style={styles.itemQuantityBtnText}>+</Text>
-                                            </TouchableOpacity>
-
-                                        </View>
+                                       
                                     </View>
-                                    <View style={styles.itemCross}>
-                                        <TouchableOpacity style={styles.Icon}>
-                                            <Image
-                                                style={styles.menuProp}
-                                                source={require('../../assets/cross.png')}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
+                                   
 
-                                </View>
+                                </TouchableOpacity>
                             )
                         })
                     }
@@ -127,27 +99,27 @@ class Checkout extends Component {
 
                     <Text style={styles.detailHead}>Address</Text>
                     <View style={styles.orderLine}>
-                        <Text style={styles.detailans}>Home</Text>
+                        <Text style={styles.detailans}>{this.state.address.length?this.state.address[0].name : "Not Selected"}</Text>
                     </View>
                     <View style={styles.orderPricing} >
                         <View style={styles.orderLine}>
                             <Text style={styles.detailHead}>Subtotal</Text>
-                            <Text style={styles.detailans}>$160.00</Text>
+                            <Text style={styles.detailans}>${this.state.products.order_total ? this.state.products.order_total.subtotal :null}</Text>
                         </View>
                         <View style={styles.orderLine}>
                             <Text style={styles.detailHead}>Discount</Text>
-                            <Text style={styles.detailans}>5%</Text>
+                            <Text style={styles.detailans}>${this.state.products.order_total ? this.state.products.order_total.discount :null}</Text>
                         </View>
                         <View style={styles.orderLine}>
                             <Text style={styles.detailHead}>Shipping</Text>
-                            <Text style={styles.detailans}>$10.00</Text>
+                            <Text style={styles.detailans}>${this.state.products.order_total ? this.state.products.order_total.shipping :null}</Text>
                         </View>
 
                     </View>
                     <View style={styles.orderPricing} >
                         <View style={styles.orderLine}>
                             <Text style={styles.detailans}>Total</Text>
-                            <Text style={styles.detailans}>$162.00</Text>
+                            <Text style={styles.detailans}>${this.state.products.order_total ? this.state.products.order_total.total :null}</Text>
                         </View>
                     </View>
 
@@ -156,7 +128,11 @@ class Checkout extends Component {
                     width={WP(80)}
                     text="Select Address"
                     height={60}
-                    OnClick={()=>{this.props.navigation.navigate('Address')}}
+                    OnClick={()=>{
+                        console.log(this.state.products.order_id);
+                        this.props.navigation.navigate('Address' , {
+                        order_id : this.state.products.order_id
+                    })}}
                 />
             </View>
 

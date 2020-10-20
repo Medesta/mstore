@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import User from '../../helper/User';
 import { getBestSell, getFeatured } from '../../network/network';
+import Loader from '../../components/Loader/Loader';
 
 class Home extends Component {
     state = {
@@ -26,7 +27,8 @@ class Home extends Component {
             }
         ],
         Feature: [],
-        BestSell: []
+        BestSell: [],
+        loader:true
     }
     componentDidMount() {
         AsyncStorage.getItem('user')
@@ -38,22 +40,24 @@ class Home extends Component {
                 getFeatured(user.jwt)
                     .then((response) => {
                         console.log(response, "!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
-                        this.setState({ Feature: response.data.products })
+                        this.setState({ Feature: response.data.products})
+
                     })
                     .catch((error) => {
-                        console.log(error);
+                        console.log(error.response);
                     })
                 getBestSell(user.jwt)
                     .then((response) => {
                         console.log(response, "!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
-                        this.setState({ BestSell: response.data.products })
+                        this.setState({ BestSell: response.data.products ,
+                            loader:false })
                     })
                     .catch((error) => {
                         console.log(error);
                     })
 
 
-            })
+            } )
 
 
 
@@ -94,6 +98,7 @@ class Home extends Component {
                     />
 
                 </View>
+                {this.state.loader && <Loader />}
             </ScrollView>
 
         );

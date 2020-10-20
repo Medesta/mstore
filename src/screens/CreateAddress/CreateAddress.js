@@ -1,60 +1,105 @@
 
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 import Header from '../../components/Header/Header';
 import { ScrollView } from 'react-native-gesture-handler';
+import User from '../../helper/User';
+import {postAddress} from "../../network/network"
+import Loader from '../../components/Loader/Loader';
 
 
 
-const CreateAddress = (props) => {
+class CreateAddress extends Component {
+    state = {
+        loader:false,
+        name: '',
+        lane: '',
+        city: '',
+        postalcode: '',
+        phone: ''
+    }
 
-    const [show, setShow] = useState(true);
+    textChange(value, name) {
+        this.setState({
+            [name]: value
+        })
+    }
+    submitAddress = () => {
+        this.setState({loader:true});
+        const { name, lane, city, postalcode, phone } = this.state;
+        if (!name || !lane || !city || !postalcode || !phone) {
+            alert('Please fill all fields');
+        this.setState({loader:false});
 
-    return (
-        <View style={styles.container}>
-            <View>
-                <Text style={styles.subNav}>
-                    Create Address
+            return;
+        }
+        const data = {
+            "name": name,
+            "lane": lane,
+            "city": city,
+            "postalCode": postalcode,
+            'phone': phone
+        }
+        postAddress(data,User.getToken())
+        .then((response)=>{
+            console.log(response);
+            props.navigation.pop();
+        })
+        .catch((error)=>{
+           alert(error.response.data.payload.message);
+        })
+
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <View>
+                    <Text style={styles.subNav}>
+                        Create Address
             </Text>
+                </View>
+                <ScrollView>
+                {this.state.loader && <Loader />}
+                    <View style={styles.loginForm}>
+                        <View style={styles.loginField}>
+                            <Text style={styles.fieldLabel}>Name</Text>
+                            <TextInput placeholder="Home" style={styles.username} value={this.state.name} onChangeText={(value) => this.textChange(value, 'name')} />
+                        </View>
+                        <View style={styles.loginField}>
+                            <Text style={styles.fieldLabel}>Address Line</Text>
+                            <TextInput placeholder="Sample Road" style={styles.username} value={this.state.lane} onChangeText={(value) => this.textChange(value, 'lane')} />
+                        </View>
+                        <View style={styles.loginField}>
+                            <Text style={styles.fieldLabel}>City</Text>
+                            <TextInput placeholder="Sample" style={styles.username} value={this.state.city} onChangeText={(value) => this.textChange(value, 'city')} />
+                        </View>
+                        <View style={styles.loginField}>
+                            <Text style={styles.fieldLabel}>Postal Code</Text>
+                            <TextInput placeholder="0000" maxLength={5} keyboardType='numeric' style={styles.username} value={this.state.postalcode} onChangeText={(value) => this.textChange(value, 'postalcode')} />
+                        </View>
+                        <View style={styles.loginField}>
+                            <Text style={styles.fieldLabel}>Phone Number</Text>
+                            <TextInput placeholder="00000000000" maxLength={12} keyboardType='numeric' style={styles.username} value={this.state.phone} onChangeText={(value) => this.textChange(value, 'phone')} />
+                        </View>
+                    </View>
+
+                </ScrollView>
+                <View style={styles.continueBtn}>
+                    <Buttoncomponent
+                        width={WP(90)}
+                        text="Add Address"
+                        height={60}
+                        // OnClick={()=>{props.navigation.pop()}}
+                        OnClick={this.submitAddress}
+                    />
+                </View>
+
             </View>
-            <ScrollView>
-            <View style={styles.loginForm}>
-                <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Name</Text>
-                    <TextInput value="Irfan Anwar" style={styles.username} />
-                </View>
-                <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Address Line</Text>
-                    <TextInput value="Sample Road" style={styles.username} />
-                </View>
-                <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>City</Text>
-                    <TextInput value="Sample" style={styles.username} />
-                </View>
-                <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Postal Code</Text>
-                    <TextInput value="0000" style={styles.username} />
-                </View>
-                <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Phone Number</Text>
-                    <TextInput value="00000000000" style={styles.username} />
-                </View>
-                </View>
-                
-            </ScrollView>
-            <View style={styles.continueBtn}> 
-                <Buttoncomponent
-                    width={WP(90)}
-                    text="Add Address"
-                    height={60}
-                    OnClick={()=>{props.navigation.pop()}}
-                />
-            </View>
-            
-        </View>
-    );
+        );
+    }
 }
 
 export default CreateAddress;
@@ -65,8 +110,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         justifyContent: 'flex-start',
     },
-    continueBtn:{
-        paddingVertical:20,
+    continueBtn: {
+        paddingVertical: 20,
     },
     subNav: {
         fontWeight: "normal",
@@ -94,7 +139,7 @@ const styles = StyleSheet.create({
     },
     loginForm: {
         paddingHorizontal: WP(8),
-        marginTop:20
+        marginTop: 20
 
 
     },

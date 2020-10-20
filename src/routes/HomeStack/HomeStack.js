@@ -14,6 +14,7 @@ import Address from '../../screens/Address/Address';
 import CreateAddress from '../../screens/CreateAddress/CreateAddress';
 import Confirmation from '../../screens/Confirmation/Confirmation';
 import MyOrders from '../../screens/MyOrders/MyOrders';
+import Profile from '../../screens/Profile/Profile'
 
 
 
@@ -52,61 +53,6 @@ const HomeStack = createStackNavigator({
        />,
    })
    },
-   Cart: { 
-    screen: Cart,
-    navigationOptions: () => ({
-       header: (props) => <Header 
-       back={true}
-       {...props}
-
-       />,
-   })
-   },
-   Checkout: { 
-    screen: Checkout,
-    navigationOptions: () => ({
-       header: (props) => <Header 
-       back={true}
-       {...props}
-
-       />,
-   })
-   },
-   Address: { 
-    screen: Address,
-    navigationOptions: () => ({
-       header: (props) => <Header 
-       back={true}
-       {...props}
-
-       />,
-   })
-   },
-   CreateAddress: { 
-    screen: CreateAddress,
-    navigationOptions: () => ({
-       header: (props) => <Header 
-       back={true}
-       {...props}
-
-       />,
-   })
-   },
-   Confirmation:{
-       screen:Confirmation,
-       navigationOptions: () =>({
-        
-       })
-
-},
-MyOrders:{
-    screen:MyOrders,
-    navigationOptions: () =>({
-        
-    })
-
-}
-
 
 }
 , {
@@ -117,9 +63,103 @@ MyOrders:{
 },
 
 );
+const CartStack = createStackNavigator({
+    Cart: { 
+        screen: Cart,
+        navigationOptions: () => ({
+           header: (props) => <Header 
+           menu={true}
+           {...props}
+    
+           />,
+       })
+       },
+       Checkout: { 
+        screen: Checkout,
+        navigationOptions: () => ({
+           header: (props) => <Header 
+           back={true}
+           {...props}
+    
+           />,
+       })
+       },
+       Address: { 
+        screen: Address,
+        navigationOptions: () => ({
+           header: (props) => <Header 
+           back={true}
+           {...props}
+    
+           />,
+       })
+       },
+       CreateAddress: { 
+        screen: CreateAddress,
+        navigationOptions: () => ({
+           header: (props) => <Header 
+           back={true}
+           {...props}
+    
+           />,
+       })
+       },
+       Confirmation:{
+           screen:Confirmation,
+           navigationOptions: () =>({
+            
+           })
+    
+    },
+  
+}
+, {
+    defaultNavigationOptions: {
+        headerShown: null,
+        header:null
+    },
+})
+
+const OrderStack = createStackNavigator({
+    MyOrders:{
+        screen:MyOrders,
+        navigationOptions: () =>({
+            header: (props) => <Header 
+           menu={true}
+           {...props}
+    
+           />,
+        })
+    
+    },
+
+},
+{
+    defaultNavigationOptions: {
+        headerShown: null,
+        header:null
+    },
+},)
+
+const ProfileStack = createStackNavigator({
+    Profile:{
+        screen:Profile,
+        navigationOptions: () =>({
+            header: (props) => <Header 
+           menu={true}
+           {...props}
+    
+           />,
+        })
+    
+    },
+})
 
 export const AppDrawer = createDrawerNavigator({
     Home: HomeStack,
+    Cart:CartStack,
+    MyOrders:OrderStack,
+    Profile:ProfileStack
 }
     ,
     {

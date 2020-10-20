@@ -1,67 +1,141 @@
 
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
+import React, { Component, useState } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Picker } from 'react-native';
 import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 import Header from '../../components/Header/Header';
 import { ScrollView } from 'react-native-gesture-handler';
+import { doProfile, getProfile } from '../../network/network';
+import User from '../../helper/User';
+import Loader from '../../components/Loader/Loader';
 
 
 
-const Profile = () => {
+class Profile extends Component{
+state={
+    name:'',
+    city:'',
+    gender:'',
+    email:'',
+    phone:'',
+    loader:true
+}
+textChange(value, name) {
+    this.setState({
+        [name]: value
+    },()=>{console.log(this.state)})
+}
+componentDidMount(){
+    getProfile(User.getToken())
+    .then((response)=>{
+        console.log(response);
+        this.setState({name:(response.data.users.firstName) + ' ' +(response.data.users.lastName ),
+                city:response.data.users.city,
+                gender:response.data.users.gender,
+                email:response.data.users.email,
+                phone:response.data.users.phone,
+                loader:false
+    }
+        
+        )
+    })
+    .catch((error)=>{
+        console.log(error);
+        alert(error.response.data.payload.message);
 
-    const [show, setShow] = useState(true);
+    })
 
+}
+doneProfile=()=>{
+    this.setState({loader:true});
+    const {email,city ,gender , name ,phone} = this.state;
+        if(!email || !city || !gender || !name || !phone){
+            alert('Please fill all fields');
+            return;
+        }
+        const firstName= name.split(" ")[0];
+        const lastName= name.replace(name.split(" ")[0], "");
+        console.log(firstName,lastName)
+
+        const obj = {'email':email ,"city":city , 'gender':gender , 'firstName':firstName , 'lastName':lastName , "phone":phone}
+        doProfile(obj,User.getToken())
+        .then((response)=>{
+            console.log(response);
+            // this.props.navigation.navigate('Home');
+            alert('User updated')
+    this.setState({loader:false});
+
+                    
+
+
+        })
+        .catch((error)=>{
+            console.log(error.response)
+    this.setState({loader:false});
+
+            alert(error.response.data.payload.message);
+            
+            
+        })
+        
+    
+}
+render(){
     return (
         <View style={styles.container}>
             <View>
-                <Header
-                    back={true}
-                    ring={true}
-                />
                 <Text style={styles.subNav}>
                     Profile
             </Text>
             </View>
             <ScrollView>
+            {this.state.loader && <Loader />}
             <View style={styles.loginForm}>
                 <View style={styles.loginField}>
                     <Text style={styles.fieldLabel}>Name</Text>
-                    <TextInput value="Irfan Anwar" style={styles.username} />
-                </View>
-                <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Address Line</Text>
-                    <TextInput value="Sample Road" style={styles.username} />
+                    <TextInput  style={styles.username} value={this.state.name} onChangeText={(value) => this.textChange(value, 'name')}/>
                 </View>
                 <View style={styles.loginField}>
                     <Text style={styles.fieldLabel}>City</Text>
-                    <TextInput value="Sample" style={styles.username} />
+                    <TextInput  style={styles.username} value={this.state.city} onChangeText={(value) => this.textChange(value, 'city')}/>
                 </View>
-                <View style={styles.loginField}>
-                    <Text style={styles.fieldLabel}>Gender</Text>
-                    <TextInput value="Male" style={styles.username} />
-                </View>
+                <View style={styles.loginFieldGender}>
+                <Text style={styles.fieldLabel}>Gender</Text>
+                <Picker
+                            selectedValue={this.state.gender}
+                            style={styles.fieldLabel}
+                            onValueChange={(value) => this.textChange(value, 'gender')}
+                        >
+                             <Picker.Item label="Select Any" value=''  />
+                            <Picker.Item label="Other" value="Others" />
+                            <Picker.Item label="Male" value="Male" />
+                            <Picker.Item label="Female" value="Female" />
+
+                        </Picker>
+                  </View>
                 <View style={styles.loginField}>
                     <Text style={styles.fieldLabel}>Email</Text>
-                    <TextInput value="Isample@gmial.com" style={styles.username} />
+                    <TextInput  style={styles.username} value={this.state.email} onChangeText={(value) => this.textChange(value, 'email') }/>
                 </View>
                 <View style={styles.loginField}>
                     <Text style={styles.fieldLabel}>Phone Number</Text>
-                    <TextInput value="00000000000" style={styles.username} />
+                    <TextInput  style={styles.username} value={this.state.phone} onChangeText={(value) => this.textChange(value, 'phone')}/>
                 </View>
                 </View>
-                <View style={styles.continueBtn}> 
+               
+            </ScrollView>
+            <View style={styles.continueBtn}> 
                 <Buttoncomponent
                     width={WP(70)}
                     text="Done"
                     height={60}
-                    OnClick="null"
+                    OnClick={this.doneProfile}
                 />
             </View>
-            </ScrollView>
             
         </View>
     );
+}
 }
 
 export default Profile;
@@ -74,6 +148,14 @@ const styles = StyleSheet.create({
     },
     continueBtn:{
         paddingVertical:20,
+    },
+    loginFieldGender: {
+        width: "100%",
+        paddingBottom: 5,
+        marginBottom:15,
+        borderBottomColor: "#000",
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        color: "#000",
     },
     subNav: {
         fontWeight: "normal",

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { View, ActivityIndicator, Dimensions } from 'react-native';
-import { colors, IS_IOS } from '../utils/contants';
-import { Loader } from '../components';
+import { View, Dimensions } from 'react-native';
+import Loader  from '../components/Loader/Loader';
 import AsyncStorage from '@react-native-community/async-storage';
-import SplashScreen from 'react-native-splash-screen'
 const { height } = Dimensions.get('screen');
 
 
@@ -16,22 +14,10 @@ export default class Check extends Component {
 
     }
     componentDidMount() {
-        setTimeout(() => {
-            SplashScreen.hide()
-        }, 2000)
+        // setTimeout(() => {
+        //     SplashScreen.hide()
+        // }, 2000)
 
-        AsyncStorage.getItem('appFirstTimeOpen')
-            .then(res => {
-                if (res == undefined) {
-                    AsyncStorage.setItem('appFirstTimeOpen', 'true')
-                    AsyncStorage.getItem('user')
-                        .then(res => {
-                            if (res == undefined) { }
-                            else
-                                AsyncStorage.removeItem('user')
-                        })
-                }
-            })
 
         AsyncStorage.getItem("user")
             .then(res => {
@@ -53,7 +39,7 @@ export default class Check extends Component {
     render() {
         return (
             <View style={{ justifyContent: 'center', alignItems: 'center', height: height / 1.2 }}>
-            {/* // <Loader /> */}
+                <Loader />
             </View>
         )
     }

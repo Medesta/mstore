@@ -4,37 +4,41 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Swiper from 'react-native-swiper';
 import ViewMoreText from 'react-native-view-more-text';
 import Header from '../../components/Header/Header';
+import Loader from '../../components/Loader/Loader';
 import User from '../../helper/User';
-import { getPrdouctById } from '../../network/network';
+import { getPrdouctById, postToCartIncreament } from '../../network/network';
 import { HP, WP } from '../../utils/contants';
+import Cart from '../Cart/Cart';
 
 
 class Product extends Component {
     constructor(props) {
         super(props);
         console.log(this.props.navigation.getParam('id'), "id reciving point");
-        this.state = { productId: this.props.navigation.getParam('id') ,
-        product: {},
-        sizes: [
-            {
-                mark: 'S',
-                available: false
-            },
-            {
-                mark: 'M',
-                available: false
-            },
-            {
-                mark: 'L',
-                available: false
-            },
-            {
-                mark: 'XXL',
-                available: false
-            }
-        ],
-        currentSelected: 0,
-    }
+        this.state = {
+            loader:true,
+            productId: this.props.navigation.getParam('id'),
+            product: {},
+            sizes: [
+                {
+                    mark: 'S',
+                    available: false
+                },
+                {
+                    mark: 'M',
+                    available: false
+                },
+                {
+                    mark: 'L',
+                    available: false
+                },
+                {
+                    mark: 'XXL',
+                    available: false
+                }
+            ],
+            currentSelected: 0,
+        }
     }
     sizeMatch = () => {
         const temp = this.state;
@@ -50,15 +54,67 @@ class Product extends Component {
         if (this.state.product.size.includes('Extra Large')) {
             temp.sizes[3].available = true;
         }
-        this.setState({sizes:temp.sizes})
+        this.setState({ sizes: temp.sizes })
+    }
+    sizeFunc=()=>{
+        switch (this.state.currentSelected) {
+            case 0:
+                return 'Small';
+                break;
+            case 1:
+                return 'Medium';
+                break;
+            case 2:
+                return 'Large';
+                break;
+            case 3:
+                return 'Extra Large';
+                break;
+            default:
+                return 'Medium';
+        }
+    }
+    lengthCalc(arr) {
+        if (arr) {
+            return arr.length;
+        }
+        return 0;
+    }
+    
+    Cart() {
+        this.setState({loader:true})
+        const id = this.state.productId;
+        let size = this.sizeFunc();
+
+        let data = {
+            "product_id": id,
+            "quantity": '1',
+            "size": size
+        };
+        console.log(data);
+        postToCartIncreament(data,User.getToken())
+        .then((response)=>{
+            console.log(response);
+          this.setState({loader:false})
+            // this.props.navigation.navigate('Cart')
+        })
+        .catch((error)=>{
+            console.log(error.response);
+        })
+
+
     }
     componentDidMount() {
         getPrdouctById(this.state.productId, User.getToken())
             .then((response) => {
                 console.log(response);
-                this.setState({ product: response.data.product });
+                this.setState({ product: response.data.product ,
+                loader:false });
                 this.sizeMatch();
 
+            })
+            .catch((error)=>{
+                console.log(error.response, 'error fetching product')
             })
     }
 
@@ -72,104 +128,112 @@ class Product extends Component {
     render() {
         return [
             <ScrollView style={styles.container} >
-
+ {this.state.loader && <Loader />}
                 <View style={styles.productPage}>
-                    <View style={styles.productPageImage}>
-                        <View style={styles.productImage}>
-                            {/* <Swiper style={styles.wrapper} showsButtons={false}
-                                autoplay={true}
-                                loop={true}
-                                showsPagination={true}
-                                paginationStyle={{
-                                    right: WP(60)
-                                }}
+                    {this.state.product.imageUrl ?
+                        <View style={styles.productPageImage}>
+                            <View style={styles.productImage}>
+                                {<Swiper style={styles.wrapper} showsButtons={false}
+                                    autoplay={false}
+                                    loop={true}
+                                    showsPagination={true}
+                                    paginationStyle={{
+                                        right: WP(60)
+                                    }}
 
-                                dot={
-                                    <View style={{
-                                        backgroundColor: '#fff',
-                                        width: 8,
-                                        height: 8,
-                                        borderRadius: 4,
-                                        marginLeft: 6,
-                                        marginRight: 6,
+                                    dot={
+                                        <View style={{
+                                            backgroundColor: '#fff',
+                                            width: 8,
+                                            height: 8,
+                                            borderRadius: 4,
+                                            marginLeft: 6,
+                                            marginRight: 6,
 
 
 
-                                    }} />
+                                        }} />
+                                    }
+                                    activeDot={
+                                        <View style={{
+                                            backgroundColor: '#667eea',
+                                            width: 8,
+                                            height: 8,
+                                            borderRadius: 4,
+                                            marginLeft: 6,
+                                            marginRight: 6,
+                                        }} />
+                                    }
+
+                                >
+
+
+
+                                    {(this.state.product.imageUrl).map((image, index) => {
+                                        return (
+                                            <View key={index} style={styles.slide}>
+                                                <TouchableOpacity activeOpacity={0.3} style={styles.productPressOn}>
+                                                    <Image source={{ uri: image }}
+                                                        style={styles.productImageProp}
+                                                    />
+                                                </TouchableOpacity>
+                                            </View>
+                                        )
+                                    })
+
+                                    }
+
+
+                                </Swiper>
                                 }
-                                activeDot={
-                                    <View style={{
-                                        backgroundColor: '#667eea',
-                                        width: 8,
-                                        height: 8,
-                                        borderRadius: 4,
-                                        marginLeft: 6,
-                                        marginRight: 6,
-                                    }} />
-                                }
 
-                            >
-
-
-
-                                {images.map((image, index) => {
-                                    return (
-                                        <View key={index} style={styles.slide}>
-                                            <TouchableOpacity activeOpacity={0.3} onPress={() => { alert(index) }} style={styles.productPressOn}>
-                                                <Image source={image.props.source}
-                                                    style={styles.productImageProp}
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                    )
-                                })
-
-                                }
-
-
-                            </Swiper>
- */}
-
+                            </View>
                         </View>
-                    </View>
-
+                        : null}
 
                     <View style={styles.namePrice}>
                         <Text style={styles.productName}>
-                            Black turtleneck top
-                </Text>
+                            {this.state.product.name}
+                        </Text>
                         <View style={styles.Pricing}>
                             <Text style={styles.productPrice}>
-                                $42
-                    </Text>
-                            <Text style={styles.productOldPrice}>
-                                $42
-                    </Text>
+                                {this.state.product.price}
+                            </Text>
+                            {this.state.product.oldPrice ?
+                                <Text style={styles.productOldPrice}>
+                                    {this.state.product.oldPrice}
+                                </Text>
+                                : null}
                         </View>
                     </View>
                     <View style={styles.ratingReview}>
                         <View style={styles.rating}>
-                            <Text style={styles.star}>4.5</Text>
+                            <Text style={styles.star}>{this.state.product.rating}</Text>
                             <Text style={styles.ratingRemarks}>Very Good</Text>
 
                         </View>
-                        <Text style={styles.reviewQuantity}>49 Reviews</Text>
+                        {this.state.product.reviews ?
+                            <Text style={styles.reviewQuantity}>{this.lengthCalc(this.state.product.reviews)} Reviews</Text>
+                            : null}
 
                     </View>
                     <View style={styles.details}>
                         <Text style={styles.detailsHeading}>
                             Description
                 </Text>
-                        <ViewMoreText
-                            numberOfLines={2}
-                            renderViewMore={this.renderViewMore}
-                            renderViewLess={this.renderViewLess}
-                            textStyle={styles.detailsDescription}
-                        >
-                            <Text numberOfLines={this.state.more ? 3 : 1} style={styles.detailsDescription}>
-                                A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.
-                </Text>
-                        </ViewMoreText>
+                        {this.state.product.description ?
+                            <ViewMoreText
+                                numberOfLines={2}
+                                renderViewMore={this.renderViewMore}
+                                renderViewLess={this.renderViewLess}
+                                textStyle={styles.detailsDescription}
+                            >
+                                <Text numberOfLines={this.state.more ? 3 : 1} style={styles.detailsDescription}>
+                                    {this.state.product.description}
+                                </Text>
+                            </ViewMoreText>
+                            :
+                            null}
 
                     </View>
                     <View style={styles.sizeHeader}>
@@ -197,7 +261,10 @@ class Product extends Component {
                 </View>
             </ScrollView>,
             <View style={styles.productButton}>
-                <TouchableOpacity style={styles.addToCart} onPress={() => { this.props.navigation.navigate('Cart') }}>
+                <TouchableOpacity style={styles.addToCart} onPress={() => {
+                    this.Cart();
+                    
+                }}>
                     <Text style={styles.addToCartText}>add to cart</Text>
 
                 </TouchableOpacity>

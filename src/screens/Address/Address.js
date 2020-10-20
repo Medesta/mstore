@@ -3,32 +3,91 @@ import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 import Header from '../../components/Header/Header';
+import Loader from '../../components/Loader/Loader';
 import Radio from '../../components/Radio/Radio';
+import User from '../../helper/User';
+import { getAddress, getOrder, postOrderAddress } from '../../network/network';
 import { HP, WP } from '../../utils/contants';
 
 
 class Address extends Component {
     state = {
-        address: [
-            {
-                name: "Sample Address",
-                address: '123 Main Street, New York, NY',
-                city: 'New York',
-                pobox: "10030",
-                additional: ''
-            },
-            {
-                name: "Address No.1",
-                address: '123 Main Street, New York, NY',
-                city: 'New York',
-                pobox: "10030",
-                additional: ''
-            },
-
-        ],
-        selectedAddress:0
+        loader:true,
+        address: [],
+        selectedAddress: '',
+        orderid:this.props.navigation.getParam('order_id'),
     }
+    componentDidMount() {
+        this.getDataFromEndpoint();
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                if (this.state.address.length) {
+                    this.getDataFromEndpoint()
+                }
+            }
+        );
 
+    }
+    getDataFromEndpoint = () => {
+        getAddress(User.getToken())
+            .then((response) => {
+                console.log(response);
+                this.setState({ address: response.data.addresses ,
+                loader:false 
+            },  this.selectDefault)
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+            alert(error.response.data.payload.message);
+
+               
+            })
+
+    }
+    selectDefault = () => {
+        if (this.state.address.length > 0) {
+            this.setState({ selectedAddress: 0 },()=>        console.log(this.state , "address !!!!!!!!!!!!!!!!!!!!!!!!!!!")
+)
+        }
+    }
+orderPublish=()=>{
+    this.setState({loader:true});
+    if(this.state.selectedAddress != 0 && !this.state.selectedAddress){
+    this.setState({loader:false});
+    alert('Select address to continue');
+    return
+
+    }
+    postOrderAddress(this.state.orderid , this.state.address[this.state.selectedAddress].id , User.getToken())
+    .then((response)=>{
+        console.log(response);
+        getOrder(this.state.orderid , User.getToken())
+        .then((response)=>{
+            console.log(response);
+            this.setState({loader:false});
+            this.props.navigation.navigate('Confirmation') ;
+        })
+        .catch((error)=>{
+            console.log(error.response);
+            alert(error.response.data.payload.message);
+            this.setState({loader:false});
+
+
+        })
+
+    })
+    .catch((error)=>{
+        console.log(error.response);
+        this.setState({loader:false});
+        alert(error.response.data.payload.message);
+
+
+
+    })
+            
+}
     render() {
         return [
 
@@ -38,10 +97,10 @@ class Address extends Component {
                     </Text>
             </View>,
             <ScrollView style={styles.container}>
-                {
+                {this.state.address.length ?
                     (this.state.address).map((obj, index) => {
-                        let prop= false;
-                        if(index == this.state.selectedAddress){
+                        let prop = false;
+                        if (index == this.state.selectedAddress) {
                             prop = true;
                         }
                         return (
@@ -49,24 +108,26 @@ class Address extends Component {
                                 <View style={styles.addressHead}>
                                     <Text style={styles.head}>{obj.name}</Text>
                                     <Radio
-                                active={prop}
-                                onPress={()=>{this.setState({selectedAddress:index})}}
-                                />
+                                        active={prop}
+                                        onPress={() => { this.setState({ selectedAddress: index }) }}
+                                    />
                                 </View>
                                 <Text style={styles.para}>
-                                    {obj.address}
+                                    {obj.lane}, {obj.city}
                                 </Text>
-                                
-                               
+
+
                             </View>
 
                         )
                     })
+                    :
+                    <Text style={styles.head}>No address found</Text>
                 }
-
+{this.state.loader && <Loader />}
             </ScrollView>
             , <View style={styles.continueBtn}>
-                <TouchableOpacity style={styles.newAddress} onPress={()=>this.props.navigation.navigate('CreateAddress')}>
+                <TouchableOpacity style={styles.newAddress} onPress={() => this.props.navigation.navigate('CreateAddress')}>
                     <Text style={styles.newAdd}>Add Address</Text>
 
                 </TouchableOpacity>
@@ -74,11 +135,12 @@ class Address extends Component {
                     width={WP(90)}
                     text="Continue To Payment"
                     height={60}
-                    OnClick={()=>{this.props.navigation.navigate('Confirmation')}}
+                    // OnClick={() => { this.props.navigation.navigate('Confirmation') }}
+                    OnClick={this.orderPublish}
                 />
             </View>
 
-        ];
+        ]
     }
 }
 
@@ -103,39 +165,39 @@ const styles = StyleSheet.create({
     continueBtn: {
         paddingVertical: 20,
     },
-    addressHead:{
-        marginVertical:10,
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center'
+    addressHead: {
+        marginVertical: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
 
     },
-    addressBox:{
-        marginVertical:10
+    addressBox: {
+        marginVertical: 10
     },
-    head:{
-        fontSize:24,
-        color:"#000"
+    head: {
+        fontSize: 24,
+        color: "#000"
 
     },
-    para:{
-        fontSize:18,
-        color:'#a0a0a0'
+    para: {
+        fontSize: 18,
+        color: '#a0a0a0'
     },
-    newAddress:{
-        width:WP(90),
-        alignSelf:"center",
-        justifyContent:'center',
-        alignItems:"center",
-        borderColor:'blue',
-        borderWidth:3,
-        borderRadius:1,
-        borderStyle:'dotted',
-        paddingVertical:10
+    newAddress: {
+        width: WP(90),
+        alignSelf: "center",
+        justifyContent: 'center',
+        alignItems: "center",
+        borderColor: 'blue',
+        borderWidth: 3,
+        borderRadius: 1,
+        borderStyle: 'dotted',
+        paddingVertical: 10
     },
-    newAdd:{
-        fontSize:20,
-        color:'blue'
+    newAdd: {
+        fontSize: 20,
+        color: 'blue'
     }
 
 })

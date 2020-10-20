@@ -5,11 +5,13 @@ import { WP, HP } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 import {  userLogin } from '../../network/network';
 import AsyncStorage from '@react-native-community/async-storage';
+import Loader from '../../components/Loader/Loader';
 
 
 
 class Login extends Component {
     state = {
+        loader:false,
         show: true,
         email: '',
         password: '',
@@ -26,8 +28,10 @@ class Login extends Component {
         })
     }
     loginSubmit=()=>{
+        this.setState({loader:true});
         const {email,password} = this.state;
         if(!email || !password){
+            this.setState({loader:false});
             alert('Please fill all fields');
             return;
         }
@@ -38,6 +42,7 @@ class Login extends Component {
             const user =response.data.user
             AsyncStorage.setItem('user' ,JSON.stringify(user));
             this.props.navigation.navigate('Home');
+            this.setState({loader:false});
 
         })
         .catch((error)=>{
@@ -55,10 +60,12 @@ class Login extends Component {
     render() {
         return (
             <View style={styles.container}>
+
                 <View>
                     <Text style={styles.subNav}>
                         Login
             </Text>
+            {this.state.loader && <Loader />}
                 </View>
                 <View style={styles.loginForm}>
                     <View style={styles.loginField}>

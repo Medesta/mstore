@@ -43,6 +43,44 @@ export const getBestSell = (token) => {
 export const getPrdouctById = (id, token) => {
     return doGet(`product/getbyid?search=${id} `, token);
 }
+export const getCart = (token)=>{
+    return doGet('order/cart' , token);
+}
+export const postToCartIncreament = (data , token) => {
+    return doPost('order/add?key=I', data , token);
+}
+export const postToCartDecreament = (data , token) => {
+    return doPost('order/add?key=D', data , token);
+}
+export const postToCartZero = (data , token) => {
+    return doPost('order/add?key=Z', data , token);
+}
+export const getAddress = (token)=>{
+    return doGet('user/getaddress' , token);
+}
+export const postAddress = (data , token) => {
+    return doPost('user/addaddress', data , token);
+}
+export const getOrder = (id,token)=>{
+    return doGet(`order/submitted?key=P&search=${id}` , token);
+}
+export const postOrderAddress = (oid ,aid ,token)=>{
+    return doGet(`order/address?orderId=${oid}&addressId=${aid}` , token);
+}
+export const getOrderHistory = (token)=>{
+    return doGet('order/orders' , token);
+}
+export const getProfile = (token)=>{
+    return doGet('user/me' , token);
+}
+export const doProfile = (data,token)=>{
+    return doPatch('user/edit' ,data, token);
+}
+export const doLogout = (token)=>{
+    return doPatch('user/logout' , token);
+}
+
+
 
 
 

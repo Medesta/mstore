@@ -1,29 +1,50 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import React from 'react';
 import { StyleSheet, Text, View ,TouchableOpacity } from 'react-native';
+import User from '../../helper/User';
+import { doLogout } from '../../network/network';
 import { HP, WP } from '../../utils/contants';
 
 
 const Sidemenu = (props) => {
+    const logout = () => {
+        // this.setState({ loader: true })
+        doLogout(User.getToken())
+            .then(res => {
+                // this.setState({ loader: false })
+                AsyncStorage.removeItem('user');
+                // console.warn('Response from logout ', res.data.response)
+                props.navigation.navigate('login')
+            })
+            .catch(err => {
+                // this.setState({ loader: false })
+                // console.warn('Error from logout ', err.response.data)
+                AsyncStorage.removeItem('user')
+                props.navigation.navigate('login')
+            })
+    }
+    let{activeItemKey} = props;
     return (
         <View style={styles.SideMenu}>
             <View>
                 
-            <TouchableOpacity style={styles.optActive} onPress={()=> props.navigation.navigate('Home')}>
-                <Text style={styles.optActiveName}>Home</Text>
+            <TouchableOpacity style={activeItemKey == "Home" ? styles.optActive :styles.opt } onPress={()=> props.navigation.navigate('Home')}>
+                <Text style={activeItemKey == "Home" ?styles.optActiveName : styles.optName}>Home</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.opt} onPress={()=> props.navigation.navigate('Orders')}>
-                <Text style={styles.optName}>My Orders</Text>
+            <TouchableOpacity style={activeItemKey == "Cart" ? styles.optActive :styles.opt} onPress={()=> props.navigation.navigate('Cart')}>
+                <Text style={activeItemKey == "Cart" ?styles.optActiveName : styles.optName}>Cart</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.opt} onPress={()=> props.navigation.navigate('Profile')}>
-                <Text style={styles.optName}>Profile</Text>
+            <TouchableOpacity style={activeItemKey == "MyOrders" ? styles.optActive :styles.opt} onPress={()=> props.navigation.navigate('MyOrders')}>
+                <Text style={activeItemKey == "MyOrders" ?styles.optActiveName : styles.optName}>My Orders</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.opt} onPress={()=> props.navigation.navigate('Settings')}>
-                <Text style={styles.optName}>Settings</Text>
+            <TouchableOpacity style={activeItemKey == "Profile" ? styles.optActive :styles.opt} onPress={()=> props.navigation.navigate('Profile')}>
+                <Text style={activeItemKey == "Profile" ?styles.optActiveName : styles.optName}>Profile</Text>
             </TouchableOpacity>
+           
            
             </View>
             <View>
-            <TouchableOpacity style={styles.logout} onPress={()=> props.navigation.navigate('Signout')}>
+            <TouchableOpacity style={styles.logout} onPress={()=> logout()}>
                 <Text style={styles.optActiveName}>Signout</Text>
             </TouchableOpacity>
             </View>

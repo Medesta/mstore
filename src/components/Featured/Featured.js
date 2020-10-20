@@ -33,7 +33,7 @@ const Featured = (props) => {
                 renderItem={({ item }) =>
                 <TouchableOpacity activeOpacity={0.8} style={styles.featureBox} onPress={()=>props.show(item._id)} >
                         <View style={styles.featureBoxInside}>
-                            <Image style={styles.featuredImageBox} source={{ uri: item.imageUrl }} />
+                            <Image style={styles.featuredImageBox} source={{ uri: item.imageUrl[0] }} />
                         </View>
                         <View style={styles.featuredInfo}>
                             <Text style={styles.featuredText}>${item.price}</Text>
