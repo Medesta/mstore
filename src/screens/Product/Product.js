@@ -100,6 +100,12 @@ class Product extends Component {
         })
         .catch((error)=>{
             console.log(error.response);
+            alert(error.response.data.payload.message);
+
+        })
+        .finally(()=>{
+          this.setState({loader:false})
+
         })
 
 
@@ -114,8 +120,12 @@ class Product extends Component {
 
             })
             .catch((error)=>{
-                console.log(error.response, 'error fetching product')
+                console.log(error.response, 'error fetching product');
+            alert("No product found");
+            this.setState({loader:false})
+
             })
+            
     }
 
     sizeToggler = (index) => {

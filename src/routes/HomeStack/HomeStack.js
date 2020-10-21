@@ -14,7 +14,8 @@ import Address from '../../screens/Address/Address';
 import CreateAddress from '../../screens/CreateAddress/CreateAddress';
 import Confirmation from '../../screens/Confirmation/Confirmation';
 import MyOrders from '../../screens/MyOrders/MyOrders';
-import Profile from '../../screens/Profile/Profile'
+import Profile from '../../screens/Profile/Profile';
+import OrderDetails from '../../screens/OrderDetails/OrderDetails'
 
 
 
@@ -126,6 +127,17 @@ const OrderStack = createStackNavigator({
         navigationOptions: () =>({
             header: (props) => <Header 
            menu={true}
+           {...props}
+    
+           />,
+        })
+    
+    },
+    orderDetails:{
+        screen:OrderDetails,
+        navigationOptions: () =>({
+            header: (props) => <Header 
+           back={true}
            {...props}
     
            />,

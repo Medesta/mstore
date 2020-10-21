@@ -40,6 +40,8 @@ class Cart extends Component {
             })
             .catch((error) => {
                 console.log(error.response);
+            alert(error.response.data.payload.message);
+
             })
 
     }
@@ -127,6 +129,7 @@ class Cart extends Component {
             .catch((error) => {
                 console.log(error.response);
                 alert(error.response.data.payload.message);
+                th8is.setState({loader:false})
 
             })
     }

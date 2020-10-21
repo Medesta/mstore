@@ -3,6 +3,7 @@ import { View, Dimensions } from 'react-native';
 import Loader  from '../components/Loader/Loader';
 import AsyncStorage from '@react-native-community/async-storage';
 const { height } = Dimensions.get('screen');
+import SplashScreen from 'react-native-splash-screen'
 
 
 export default class Check extends Component {
@@ -14,9 +15,9 @@ export default class Check extends Component {
 
     }
     componentDidMount() {
-        // setTimeout(() => {
-        //     SplashScreen.hide()
-        // }, 2000)
+        setTimeout(() => {
+            SplashScreen.hide()
+        }, 2000)
 
 
         AsyncStorage.getItem("user")

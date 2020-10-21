@@ -46,10 +46,13 @@ class Login extends Component {
 
         })
         .catch((error)=>{
+            this.setState({loader:false});
+
             alert(error.response.data.payload.message);
             
         })
         .finally(()=>{
+            this.setState({loader:false});
 
         })
 
