@@ -76,16 +76,16 @@ class Login extends Component {
                         <TextInput style={styles.username} value={this.state.email} onChangeText={(value) => this.textChange(value, 'email')} />
                     </View>
                     <View style={styles.loginField}>
-                        <Text style={styles.fieldLabel}>Password</Text>
-                        <TextInput secureTextEntry={this.state.show} style={styles.username} value={this.state.password} onChangeText={(value) => this.textChange(value, 'password')} />
+                            <Text style={styles.fieldLabel}>Password</Text>
+                            <TextInput secureTextEntry={this.state.show} style={styles.username} value={this.state.password} onChangeText={(value) => this.textChange(value, 'password')} />
 
-                        <TouchableOpacity style={styles.eyeIcon} onPress={() => this.toggleShow}>
-                            <Image
-                                style={styles.eyeProp}
-                                source={require('../../assets/eye.png')}
-                            />
-                        </TouchableOpacity>
-                    </View>
+                            <TouchableOpacity style={styles.eyeIcon} onPress={() => this.toggleShow()}>
+                                <Image
+                                    style={styles.eyeProp}
+                                    source={require('../../assets/eye.png')}
+                                />
+                            </TouchableOpacity>
+                        </View>
                 </View>
                 <View>
                     <Buttoncomponent
@@ -132,13 +132,12 @@ const styles = StyleSheet.create({
     },
     eyeIcon: {
         width: WP(10),
-        height: HP(7),
-        justifyContent: 'flex-end',
+        height: HP(6.5),
+        justifyContent: 'center',
         alignItems: 'center',
         position: "absolute",
-        right: 0
-
-
+        right: 0,
+        top:10
 
     },
     eyeProp: {
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
         color: "#000",
         padding: 10,
         paddingBottom: 5,
-        lineHeight: 18
+        // lineHeight: 18,
 
     },
     noAccount: {
@@ -179,7 +178,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         color: '#707070',
         width: WP(100),
-        flexDirection: "row"
+        flexDirection: "row",
+        position:'relative'
     },
     noAccountText: {
         fontSize: 18,

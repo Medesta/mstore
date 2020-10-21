@@ -113,15 +113,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         paddingVertical: 20,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
-        shadowOpacity: 0.29,
-        shadowRadius: 4.65,
-        elevation: 7,
-        backgroundColor: "#fff",
+        backgroundColor: "#f6f6f6",
         alignItems: 'flex-start'
     },
 

@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
         height: WP(6),
     },
     backProp: {
-        width: WP(5) * 1.56,
+        width: WP(6) * 1.56,
         height: HP(2)
     },
 

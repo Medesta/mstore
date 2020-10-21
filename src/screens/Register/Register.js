@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Picker } from 'react-native';
-import { WP, HP } from '../../utils/contants';
+import { WP, HP, IS_IOS } from '../../utils/contants';
 import Buttoncomponent from '../../components/Buttoncomponent/Buttoncomponent';
 import { userCreate } from '../../network/network';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -96,6 +96,12 @@ class Register extends Component {
                             <Picker
                                 selectedValue={this.state.gender}
                                 style={styles.fieldLabel}
+                                itemStyle={IS_IOS ? {
+                                    width: WP(70),
+                                    height: 100,
+                                    // borderWidth:0.2
+                                } : {}}
+
                                 onValueChange={(value) => this.textChange(value, 'gender')}
                             >
                                 <Picker.Item label="Select Any" value='' />
@@ -141,7 +147,7 @@ class Register extends Component {
 
                     </View>
                 </ScrollView>
-                </View>
+            </View>
 
         )
     }
@@ -150,15 +156,15 @@ class Register extends Component {
 export default Register;
 
 const styles = StyleSheet.create({
-                    container: {
-                    flex: 1,
+    container: {
+        flex: 1,
         backgroundColor: '#fff',
         justifyContent: 'flex-start',
 
     },
 
     subNav: {
-                    fontWeight: "normal",
+        fontWeight: "normal",
         color: "#000",
         fontSize: 34,
         textAlign: 'left',
@@ -167,23 +173,23 @@ const styles = StyleSheet.create({
         color: '#707070'
     },
     eyeIcon: {
-                    width: WP(10),
-        height: HP(7),
-        justifyContent: 'flex-end',
+        width: WP(10),
+        height: HP(6.5),
+        justifyContent: 'center',
         alignItems: 'center',
         position: "absolute",
-        right: 0
-
+        right: 0,
+        top:10
 
 
     },
     eyeProp: {
-                    width: WP(4) * 1.56,
+        width: WP(4) * 1.56,
         height: WP(4)
 
     },
     loginForm: {
-                    width: '100%',
+        width: '100%',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         paddingBottom: 10,
@@ -193,11 +199,11 @@ const styles = StyleSheet.create({
 
     },
     loginField: {
-                    width: "100%",
+        width: "100%",
         paddingBottom: 20
     },
     loginFieldGender: {
-                    width: "100%",
+        width: "100%",
         paddingBottom: 5,
         marginBottom: 15,
         borderBottomColor: "#000",
@@ -206,19 +212,18 @@ const styles = StyleSheet.create({
     },
 
     username: {
-                    width: "100%",
+        width: "100%",
         fontSize: 18,
         borderBottomColor: "#000",
         borderBottomWidth: 1,
         color: "#000",
         padding: 10,
         paddingBottom: 5,
-        lineHeight: 18
 
     },
     noAccount: {
 
-                    height: HP(7),
+        height: HP(7),
         alignSelf: "center",
         justifyContent: 'center',
         alignItems: "center",
@@ -227,7 +232,7 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     noAccountText: {
-                    fontSize: 18,
+        fontSize: 18,
         color: '#707070',
         textTransform: "capitalize",
         justifyContent: 'center',
@@ -235,7 +240,7 @@ const styles = StyleSheet.create({
 
     },
     fieldLabel: {
-                    fontSize: 16,
+        fontSize: 16,
         color: '#707070',
         textTransform: "capitalize",
         justifyContent: 'center',
@@ -243,12 +248,12 @@ const styles = StyleSheet.create({
 
     },
     secondaryButton: {
-                    justifyContent: "center",
+        justifyContent: "center",
         alignItems: "center",
         alignItems: 'center',
     },
     secondaryButtonText: {
-                    fontSize: 18,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#000',
         marginLeft: 5,
